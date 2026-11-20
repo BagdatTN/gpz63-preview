@@ -1,0 +1,250 @@
+.home-catalog {
+  padding-block: clamp(2.25rem, 6vw, 5.25rem) clamp(1.5rem, 3.5vw, 2.75rem);
+}
+
+.home-constructions-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .65rem 1.25rem;
+  padding-block-end: clamp(.75rem, 2vw, 1.3rem);
+}
+
+.home-construction-controls {
+  display: flex;
+  flex: none;
+  gap: .55rem;
+}
+
+.home-construction-controls button {
+  --rail-button-width: 62px;
+  --rail-button-height: 54px;
+  display: grid;
+  place-items: center;
+  width: max(44px, var(--rail-button-width));
+  height: max(44px, var(--rail-button-height));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.55rem;
+  line-height: 1;
+}
+
+.home-construction-controls button::before,
+.home-construction-controls button > span { grid-area: 1 / 1; }
+
+.home-construction-controls button::before {
+  content: "";
+  width: var(--rail-button-width);
+  height: var(--rail-button-height);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.home-construction-controls button:hover:not([aria-disabled="true"])::before {
+  border-color: var(--blue);
+  background: var(--pale);
+}
+
+.home-constructions .home-construction-controls { gap: .35rem; }
+.home-constructions .home-construction-controls button {
+  --rail-button-width: 42px;
+  --rail-button-height: 30px;
+  font-size: 1.25rem;
+}
+
+.home-construction-controls button[aria-disabled="true"] {
+  opacity: .5;
+  cursor: default;
+}
+
+.home-construction-rail {
+  --construction-gap: clamp(.75rem, 2vw, 1.75rem);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 3 * var(--construction-gap)) / 4);
+  gap: var(--construction-gap);
+  margin: 0;
+  padding: clamp(.5rem, 1.5vw, 1rem) 0 .7rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  list-style: none;
+}
+
+.home-construction-rail::-webkit-scrollbar { display: none; }
+
+.home-construction-card {
+  min-width: 0;
+  scroll-snap-align: start;
+  display: grid;
+  align-content: start;
+  gap: .55rem;
+  padding-block-end: .9rem;
+}
+
+.home-construction-catalog > a {
+  display: grid;
+  height: 100%;
+  gap: .55rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.home-construction-card :is(a, button):focus-visible { outline-offset: -3px; }
+
+.home-construction-art {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+button.home-construction-art {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+button.home-construction-art:disabled { cursor: default; }
+
+.home-construction-art > img,
+.home-bearing-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.home-construction-art[data-home-model-state="ready"] > img { visibility: hidden; }
+
+.home-construction-card h3 {
+  font-size: clamp(1.2rem, 1.8vw, 1.65rem);
+  letter-spacing: -.025em;
+  text-align: center;
+}
+
+.home-construction-card h3 a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: .3rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.home-construction-card h3 a:hover,
+.home-construction-card > a:hover h3 {
+  color: var(--blue);
+}
+
+.home-construction-catalog-art {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--surface) 64%, transparent);
+}
+
+.home-construction-catalog-art h3 {
+  max-width: 12ch;
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  line-height: 1.2;
+}
+
+.home-construction-catalog-art span {
+  display: grid;
+  place-items: center;
+  color: var(--blue);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.home-construction-catalog > a:hover .home-construction-catalog-art {
+  border-color: var(--blue);
+  background: var(--pale);
+}
+
+.home-manufacturers { margin-block-start: clamp(2.15rem, 5vw, 4.25rem); }
+.home-manufacturers h2 { font-size: clamp(1.6rem, 2.6vw, 2.35rem); }
+
+.home-manufacturer-rail {
+  --manufacturer-gap: clamp(.6rem, 1.5vw, 1.1rem);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 5 * var(--manufacturer-gap)) / 6);
+  gap: var(--manufacturer-gap);
+  margin: 0;
+  padding: clamp(.75rem, 2vw, 1.3rem) 0 .7rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  list-style: none;
+}
+
+.home-manufacturer-rail::-webkit-scrollbar { display: none; }
+.home-manufacturer-card { min-width: 0; scroll-snap-align: start; }
+.home-manufacturer-card a {
+  --manufacturer-border: var(--line);
+  display: grid;
+  perspective: 800px;
+  border-radius: var(--radius);
+}
+.home-manufacturer-flip { display: grid; transform-style: preserve-3d; }
+.home-manufacturer-face {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  min-height: clamp(6rem, 11vw, 8.5rem);
+  padding: 1.2rem;
+  border: 1px solid var(--manufacturer-border);
+  border-radius: var(--radius);
+  background: var(--media-surface);
+  backface-visibility: hidden;
+}
+.home-manufacturer-face--back { transform: rotateX(180deg); }
+.home-manufacturer-card a:is(:focus-visible, :active) { --manufacturer-border: var(--blue); }
+.home-manufacturer-card a:focus-visible { outline-offset: -3px; }
+.home-manufacturer-card img { display: block; width: 100%; height: 3.2rem; object-fit: contain; }
+
+@media (hover: hover) and (pointer: fine) {
+  .home-manufacturer-card a:hover { --manufacturer-border: var(--blue); }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .home-manufacturer-face { transition: border-color .18s ease-out; }
+}
+
+@media (max-width: 900px) {
+  .home-construction-rail { grid-auto-columns: calc((100% - 2 * var(--construction-gap)) / 3); }
+  .home-manufacturer-rail { grid-auto-columns: calc((100% - 3 * var(--manufacturer-gap)) / 4); }
+}
+
+@media (max-width: 52rem) {
+  .home-construction-rail { grid-auto-columns: calc((100% - var(--construction-gap)) / 2); }
+  .home-manufacturers .home-construction-controls button { --rail-button-width: 48px; --rail-button-height: 44px; }
+  .home-construction-art { aspect-ratio: auto; height: clamp(9rem, 31vw, 15rem); }
+  .home-manufacturer-rail { grid-auto-columns: calc((100% - 2 * var(--manufacturer-gap)) / 3); }
+}
+
+@media (max-width: 36rem) {
+  .home-constructions .home-constructions-heading { gap: .55rem; }
+  .home-manufacturers .home-constructions-heading { flex-wrap: wrap; }
+  .home-manufacturers .home-construction-controls { margin-inline-start: auto; }
+  .home-construction-rail { grid-auto-columns: 84%; }
+  .home-construction-art { height: clamp(10rem, 59vw, 15rem); }
+  .home-manufacturer-rail { grid-auto-columns: 43%; }
+}

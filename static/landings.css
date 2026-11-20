@@ -1,0 +1,157 @@
+.store-landing {
+  --landing-ink: var(--ink);
+  --landing-muted: var(--muted);
+  --landing-rule: var(--light-line);
+  color: var(--landing-ink);
+}
+
+.landing-hero { padding-top: .75rem; }
+
+.landing-hero .breadcrumbs { margin-bottom: 0; }
+.landing-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: 24px;
+  align-items: center;
+  padding-block: clamp(1.5rem, 3vw, 3rem) clamp(2rem, 4vw, 4rem);
+}
+
+.landing-copy { min-width: 0; }
+.landing-copy h1 { font-size: clamp(2.625rem, 4.2vw, 3.375rem); max-width: 16ch; }
+.landing-lead {
+  color: var(--landing-muted);
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  max-width: 48ch;
+  margin-block: .8rem 1.45rem;
+}
+
+.landing-form { max-width: 32rem; }
+.landing-form label, .landing-form legend { display: block; font-weight: 650; }
+.landing-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .5rem;
+  margin-top: .3rem;
+}
+
+.landing-form input, .landing-form .button { min-height: 48px; }
+.landing-browse, .landing-products-header a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-weight: 700;
+}
+
+.landing-browse { margin-top: .55rem; }
+.landing-art { min-width: 0; margin: 0; }
+.landing-art-stage {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1.35;
+  background: radial-gradient(ellipse at 53% 43%, var(--media-surface) 8%, color-mix(in srgb, var(--media-surface) 70%, var(--media-steel)) 59%, var(--media-steel) 100%);
+  border-radius: 16px;
+}
+
+.landing-art-stage img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  animation: landing-image-in 360ms ease-out both;
+}
+
+@keyframes landing-image-in { from { opacity: .74; } to { opacity: 1; } }
+
+.landing-art figcaption {
+  color: var(--landing-muted);
+  font-size: .875rem;
+  margin-top: .55rem;
+  overflow-wrap: anywhere;
+}
+
+.store-landing--category .landing-art-stage {
+  background: none;
+  isolation: auto;
+  aspect-ratio: 1.23;
+  max-height: 510px;
+}
+:root[data-theme="dark"] .store-landing--category .landing-art-stage {
+  background: var(--studio-stage);
+  isolation: isolate;
+}
+
+.store-landing--brand .landing-art { width: min(100%, 35rem); justify-self: end; }
+
+.store-landing--size .landing-hero-grid { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); }
+.landing-form--size fieldset { min-width: 0; padding: 0; margin: 0; border: 0; }
+.landing-dimension-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
+.landing-unit { display: block; position: relative; margin-top: .2rem; }
+.landing-unit input { padding-right: 2.05rem; }
+.landing-unit > span { position: absolute; inset: 50% .55rem auto auto; transform: translateY(-50%); font-size: .875rem; color: var(--landing-muted); pointer-events: none; }
+.landing-form--size .button { margin-top: .65rem; }
+.landing-size-key {
+  width: min(100%, 30rem);
+  justify-self: end;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.landing-size-key h2 { font-size: clamp(1.2rem, 2.3vw, 1.7rem); margin-bottom: .7rem; }
+.landing-size-key dl > div { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: .5rem; align-items: center; padding-block: .62rem; }
+.landing-size-key dl > div + div { border-top: 1px solid var(--landing-rule); }
+.landing-size-key dt { color: var(--blue); font-weight: 750; font-size: 1.25rem; }
+.landing-size-key dd { color: var(--landing-muted); margin: 0; }
+
+.landing-products { padding-top: clamp(1.65rem, 4vw, 3.5rem); }
+.landing-products-header { display: flex; align-items: baseline; justify-content: space-between; gap: .25rem 1rem; flex-wrap: wrap; margin-bottom: .75rem; }
+.landing-products h2 { font-size: clamp(1.65rem, 3vw, 2.45rem); }
+.landing-products .product-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.landing-guide {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 6vw, 5.25rem);
+  padding-block: clamp(2rem, 5vw, 4.5rem);
+}
+
+.landing-guide h2 { font-size: clamp(1.4rem, 2.5vw, 2rem); margin-bottom: .65rem; }
+.landing-guide p { color: var(--landing-muted); max-width: 64ch; }
+.landing-guide ul { display: flex; flex-wrap: wrap; gap: 0 1.15rem; list-style: none; padding: 0; margin: 0; }
+.landing-guide li { min-width: 0; }
+.landing-guide a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 650; overflow-wrap: anywhere; }
+.landing-spec-inner { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem 2rem; padding-block: clamp(1.8rem, 5vw, 3.55rem); }
+.landing-spec h2 { font-size: clamp(1.75rem, 3.5vw, 2.8rem); }
+.landing-spec p { margin-top: .5rem; color: var(--muted); max-width: 55ch; }
+.landing-spec .button { flex-shrink: 0; }
+.landing-spec .button:focus-visible { outline-color: var(--blue); }
+
+@media (max-width: 1120px) {
+  .landing-products .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .landing-hero { padding-top: .4rem; }
+  .landing-hero-grid, .store-landing--size .landing-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 1rem; padding-block: .65rem 1.15rem; }
+  .landing-copy h1 { font-size: clamp(2rem, 8vw, 2.375rem); max-width: 19ch; }
+  .landing-lead { margin-block: .6rem .9rem; }
+  .landing-browse { margin-top: .35rem; }
+  .landing-art, .store-landing--brand .landing-art { width: min(100%, 28rem); justify-self: center; }
+  .landing-art-stage, .store-landing--category .landing-art-stage { max-height: 300px; aspect-ratio: 1.25; }
+  .landing-size-key { justify-self: start; }
+  .landing-products .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .landing-guide { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .landing-spec-inner { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 375px) {
+  .landing-unit input { padding-left: .5rem; padding-right: 1.8rem; }
+  .landing-unit > span { right: .4rem; }
+  .landing-products .product-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-art-stage img { animation: none; }
+}
