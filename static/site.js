@@ -8,6 +8,7 @@
     const summary = choice.querySelector('summary');
     const rows = Array.from(choice.querySelectorAll('[data-choice-option]'));
     const inputs = rows.map((row) => row.querySelector('input'));
+    const productTypes = inputs.some((input) => input.name === 'product_type');
     const message = choice.querySelector('[data-choice-message]');
     const value = choice.querySelector('[data-choice-value]');
     const brandControl = entry.querySelector('[data-brand-control]');
@@ -18,7 +19,7 @@
     const brandNames = search ? rows.map((row) => normalized(row.dataset.label)) : [];
     const update = () => {
       const names = rows.filter((_, index) => inputs[index].checked).map((row) => row.dataset.label);
-      const limitReached = names.length >= 10;
+      const limitReached = !productTypes && names.length >= 10;
       for (const count of counts) {
         count.textContent = String(names.length);
         count.hidden = !names.length;

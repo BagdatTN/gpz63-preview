@@ -16,6 +16,7 @@
     q: params.get('q') || '',
     brand: selectedFromParams('brand'),
     family: selectedFromParams('family'),
+    product_type: selectedFromParams('product_type'),
     application: selectedFromParams('application'),
     d: selectedFromParams('d'), D: selectedFromParams('D'), B: selectedFromParams('B'),
     sort: params.get('sort') || 'relevance',
@@ -43,10 +44,14 @@
   const inputValues = (name) => [...(filterForm?.querySelectorAll(`input[name="${name}"]`) || [])];
   const reflectControls = () => {
     if (searchInput) searchInput.value = filters.q;
-    for (const name of ['brand', 'family', 'application']) {
+    for (const name of ['brand', 'product_type', 'application']) {
       const chosen = new Set(filters[name]);
-      for (const input of inputValues(name)) input.checked = chosen.has(input.value);
+      const inputs = inputValues(name);
+      for (const input of inputs) input.checked = chosen.has(input.value);
+      inputs[0]?.dispatchEvent(new Event('change', { bubbles: true }));
     }
+    const familyScope = filterForm?.querySelector('input[type="hidden"][name="family"]');
+    if (familyScope) familyScope.value = filters.family.join('|');
     for (const name of ['d', 'D', 'B']) {
       const field = filterForm?.querySelector(`input[name="${name}"]`);
       if (field) field.value = filters[name].join('|');
@@ -60,7 +65,7 @@
   const writeUrl = (page = 1, replace = false) => {
     const next = new URLSearchParams();
     if (filters.q) next.set('q', filters.q);
-    for (const name of ['brand', 'family', 'application', 'd', 'D', 'B']) {
+    for (const name of ['brand', 'family', 'product_type', 'application', 'd', 'D', 'B']) {
       if (filters[name].length) next.set(name, filters[name].join('|'));
     }
     if (filters.sort !== 'relevance') next.set('sort', filters.sort);
@@ -74,6 +79,7 @@
     if (facet === 'application') return Array.isArray(product.applications) ? product.applications : [];
     if (facet === 'brand') return product.brand_slug ? [product.brand_slug] : [];
     if (facet === 'family') return product.family_slug ? [product.family_slug] : [];
+    if (facet === 'product_type') return product.product_type ? [product.product_type] : [];
     return [];
   };
   const epkBrands = new Set();
@@ -105,7 +111,7 @@
   const filterProducts = (products, exclude = '') => products.filter((product) => {
     if (collection && collection !== 'all' && !(product.collections || []).includes(collection)) return false;
     if (!matchesText(product, filters.q)) return false;
-    for (const facet of ['brand', 'family', 'application']) {
+    for (const facet of ['brand', 'family', 'product_type', 'application']) {
       if (facet !== exclude && !matchesFacet(product, facet, filters[facet])) return false;
     }
     for (const axis of ['d', 'D', 'B']) if (!matchesDimensions(product, axis, filters[axis])) return false;
@@ -150,12 +156,49 @@
     }
   };
   shellFacetLabels();
+  let productTypeLabels = {};
+  const refreshProductTypeOptions = () => {
+    const options = [...document.querySelectorAll('.choice-options label[data-choice-option]')]
+      .filter((row) => row.querySelector('input[name="product_type"]'));
+    if (!options.length) return;
+    const totals = new Map();
+    for (const product of filterProducts(products, 'product_type')) {
+      if (product.product_type) totals.set(product.product_type, (totals.get(product.product_type) || 0) + 1);
+    }
+    const collator = new Intl.Collator('ru', { sensitivity: 'base', numeric: true });
+    for (const row of options) {
+      const input = row.querySelector('input[name="product_type"]');
+      const label = productTypeLabels[input.value] || row.dataset.label || input.value;
+      row.dataset.label = label;
+      let value = row.querySelector('span');
+      if (!value) {
+        value = document.createElement('span');
+        input.insertAdjacentElement('afterend', value);
+      }
+      value.textContent = label;
+      row.hidden = !totals.get(input.value) && !filters.product_type.includes(input.value);
+    }
+    options.sort((a, b) => {
+      const aInput = a.querySelector('input[name="product_type"]');
+      const bInput = b.querySelector('input[name="product_type"]');
+      const unclassifiedOrder = Number(aInput.value === 'unclassified') - Number(bInput.value === 'unclassified');
+      const difference = (totals.get(bInput.value) || 0) - (totals.get(aInput.value) || 0);
+      return unclassifiedOrder || difference || collator.compare(a.dataset.label || '', b.dataset.label || '');
+    });
+    const list = options[0].parentElement;
+    for (const row of options) list.append(row);
+    list.dispatchEvent(new Event('change', { bubbles: true }));
+  };
   const renderChips = () => {
     const chips = [];
     if (filters.q) chips.push({ key: 'q', value: filters.q, text: `Запрос: ${filters.q}`, group: 'q' });
-    for (const name of ['brand', 'family', 'application', 'd', 'D', 'B']) {
-      const prefix = ({ brand: 'Производитель', family: 'Тип изделия', application: 'Применение' })[name];
-      for (const value of filters[name]) chips.push({ key: name, value, text: prefix ? (labels.get(value) || value) : `${name}: ${value}`, group: name });
+    for (const name of ['brand', 'family', 'product_type', 'application', 'd', 'D', 'B']) {
+      const prefix = ({ brand: 'Производитель', family: 'Тип изделия', product_type: 'Группа', application: 'Применение' })[name];
+      for (const value of filters[name]) {
+        const text = name === 'product_type' ? (productTypeLabels[value] || labels.get(value) || value)
+          : prefix ? (labels.get(value) || value) : `${name}: ${value}`;
+        chips.push({ key: name, value, text, group: name });
+      }
     }
     if (filters.sort !== 'relevance') chips.push({ key: 'sort', value: filters.sort, text: `Сортировка: ${{ name: 'По названию', 'price-asc': 'Сначала дешевле', 'price-desc': 'Сначала дороже' }[filters.sort] || filters.sort}`, group: 'sort' });
     const rows = chips.map((chip, index) => `<li class="filter-chip">${escapeHtml(chip.text)} <a href="#" data-remove-filter="${escapeHtml(chip.key)}" data-remove-value="${escapeHtml(chip.value)}" aria-label="Убрать фильтр ${escapeHtml(chip.text)}">×</a></li>`);
@@ -217,6 +260,7 @@
     count.textContent = `Найдено: ${moneyCount(matches.length)}`;
     renderChips();
     reflectControls();
+    refreshProductTypeOptions();
     renderPagination(currentPage, pages);
     setStatus('');
     if (!visible.length) {
@@ -255,7 +299,7 @@
   const readForm = (form) => {
     const data = new FormData(form);
     filters.q = String(data.get('q') || '').trim();
-    for (const name of ['brand', 'family', 'application']) filters[name] = [...new Set(data.getAll(name).flatMap((value) => split(value)))];
+    for (const name of ['brand', 'product_type', 'application']) filters[name] = [...new Set(data.getAll(name).flatMap((value) => split(value)))];
     for (const name of ['d', 'D', 'B']) filters[name] = split(String(data.get(name) || '').replaceAll(',', '.'));
   };
   filterForm?.addEventListener('submit', (event) => {
@@ -281,7 +325,7 @@
       writeUrl(1); render(1);
     } else if (event.target.closest('[data-reset-filters]')) {
       event.preventDefault(); filters.q = ''; filters.sort = 'relevance';
-      for (const key of ['brand', 'family', 'application', 'd', 'D', 'B']) filters[key] = [];
+      for (const key of ['brand', 'family', 'product_type', 'application', 'd', 'D', 'B']) filters[key] = [];
       writeUrl(1); render(1);
     }
   });
@@ -305,10 +349,16 @@
     })
     .then((data) => {
       products = Array.isArray(data.products) ? data.products : [];
+      for (const product of products) {
+        if (product.family_slug && product.family) labels.set(product.family_slug, product.family);
+      }
+      productTypeLabels = data.product_types || {};
+      for (const [slug, label] of Object.entries(productTypeLabels)) labels.set(slug, label);
       for (const slug of data.epk_brands || []) epkBrands.add(slug);
       dataReady = true;
       if (requestedPage === 1 && !location.search) {
         // Preserve the server-rendered first page and its formatted count.
+        refreshProductTypeOptions();
         return;
       }
       render(requestedPage);
